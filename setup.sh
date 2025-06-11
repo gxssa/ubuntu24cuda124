@@ -77,32 +77,9 @@ print_status "Installing CUDA 12.4 toolkit..."
 chmod +x cuda_12.4.0_550.54.14_linux.run
 sh cuda_12.4.0_550.54.14_linux.run --toolkit --silent --override
 
-# Add CUDA to PATH and LD_LIBRARY_PATH for the actual user
-print_status "Configuring CUDA environment variables..."
-
-# When run with sudo, configure for the actual user, not root
-if [ -n "$SUDO_USER" ]; then
-    USER_HOME="/home/$SUDO_USER"
-    print_status "Configuring CUDA for user: $SUDO_USER"
-else
-    USER_HOME="$HOME"
-    print_status "Configuring CUDA for current user"
-fi
-
-# Add to user's bashrc
-echo 'export PATH=/usr/local/cuda-12.4/bin:$PATH' >> "$USER_HOME/.bashrc"
-echo 'export LD_LIBRARY_PATH=/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH' >> "$USER_HOME/.bashrc"
-
-# Source the bashrc to make it immediately available
-if [ -n "$SUDO_USER" ]; then
-    sudo -u "$SUDO_USER" bash -c "source $USER_HOME/.bashrc"
-else
-    source "$USER_HOME/.bashrc"
-fi
-
-# Set for current session too
-export PATH=/usr/local/cuda-12.4/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH
+echo 'export PATH=/usr/local/cuda-12.4/bin:$PATH' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+source ~/.bashrc
 
 print_status "CUDA paths added and loaded successfully"
 
